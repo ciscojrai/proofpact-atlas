@@ -1,0 +1,1 @@
+{"criterion_id":"CSV-05","expected":{"output":{"currency":"USD","customer":"","format":"invoice/1","invoice_id":"","line_count":0,"lines":[],"total":"0"}},"id":"happy-empty-invoice","input":"invoice_id,customer_name,item,qty,unit_price\n","severity":"low"}

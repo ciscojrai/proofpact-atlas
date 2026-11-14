@@ -1,0 +1,1 @@
+{"criterion_id":"CSV-04","expected":{"error":{"actual":4,"code":"RAGGED_ROW","expected":5,"op":"parse","row":2}},"id":"csv04-ragged-row","input":"invoice_id,customer_name,item,qty,unit_price\nINV-500,Acme Corp,Widget,2,5.00\nINV-500,Acme Corp,Short Row,1\n","severity":"high"}

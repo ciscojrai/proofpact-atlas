@@ -1,0 +1,25 @@
+[package]
+name = "proofpact"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# `legacy` keeps `near_sdk::collections::LookupMap` and the `near_sdk::borsh`
+# re-export that the derives rely on. Borsh is also a direct dependency so the
+# derive macros can resolve `::borsh`.
+near-sdk = { version = "5.7", features = ["legacy"] }
+borsh = "1"
+
+[profile.release]
+codegen-units = 1
+opt-level = "z"
+lto = true
+# The panic message is the product: near-sdk's `require!` calls the `panic_utf8`
+# host function directly, so a panic surfaces as
+#   Smart contract panicked: NOT_VERIFIER
+# only when built with `--cfg near` (host functions active). The build script
+# in the root package.json pins that flag.
+strip = true

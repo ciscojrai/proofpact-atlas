@@ -1,0 +1,1 @@
+{"criterion_id":"CSV-04","expected":{"error":{"code":"BAD_DECIMAL","column":"unit_price","op":"parse_decimal","row":2,"value":"9.9.9"}},"id":"csv04-late-numeric","input":"invoice_id,customer_name,item,qty,unit_price\nINV-502,Acme Corp,Good,2,5.00\nINV-502,Acme Corp,Bad,1,9.9.9\n","severity":"high"}

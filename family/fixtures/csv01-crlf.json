@@ -1,0 +1,1 @@
+{"criterion_id":"CSV-01","expected":{"output":{"currency":"USD","customer":"Acme Corp","format":"invoice/1","invoice_id":"INV-203","line_count":1,"lines":[{"item":"Widget","line_total":"6","qty":"2","unit_price":"3"}],"total":"6"}},"id":"csv01-crlf","input":"invoice_id,customer_name,item,qty,unit_price\r\nINV-203,Acme Corp,Widget,2,3.00\r\n","severity":"medium"}

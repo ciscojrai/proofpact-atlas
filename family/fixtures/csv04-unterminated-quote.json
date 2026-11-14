@@ -1,0 +1,1 @@
+{"criterion_id":"CSV-04","expected":{"error":{"code":"CSV_PARSE_ERROR","op":"parse","row":1}},"id":"csv04-unterminated-quote","input":"invoice_id,customer_name,item,qty,unit_price\nINV-501,Acme Corp,\"Oops,2,5.00\n","severity":"high"}

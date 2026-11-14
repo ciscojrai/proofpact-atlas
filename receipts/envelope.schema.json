@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "proofpact/envelope/1",
+  "title": "ProofPact message envelope (INTERFACES §2)",
+  "type": "object",
+  "required": ["proto", "job_id", "msg_id", "actor", "type", "payload"],
+  "properties": {
+    "proto": { "const": "proofpact/1" },
+    "job_id": { "type": "string", "pattern": "^pp_[0-9a-f]{8}$" },
+    "msg_id": { "type": "string", "pattern": "^m_[0-9a-f]{8}$" },
+    "actor": { "enum": ["client", "builder", "challenger", "controller", "runner", "verifier"] },
+    "corr": { "type": "string", "pattern": "^m_[0-9a-f]{8}$" },
+    "type": { "enum": ["OFFER", "ACCEPT", "ARTIFACT_SUBMITTED", "CHALLENGE", "TEST_REQUEST", "TEST_RESULT", "REVISION", "DECISION_REQUIRED", "REVIEW_COMPLETE"] },
+    "payload": { "type": "object" }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,1 @@
+{"criterion_id":"CSV-04","expected":{"error":{"code":"MIXED_INVOICE_ID","expected":"INV-503","found":"INV-504","op":"emit_invoice","row":2}},"id":"csv04-mixed-invoice","input":"invoice_id,customer_name,item,qty,unit_price\nINV-503,Acme Corp,Widget,2,5.00\nINV-504,Acme Corp,Gadget,1,1.00\n","severity":"medium"}

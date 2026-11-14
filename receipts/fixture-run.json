@@ -1,0 +1,20 @@
+{
+  "run_id": "r_01234567",
+  "job_id": "pp_89abcdef",
+  "rev": 2,
+  "artifact_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "spec_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "policy_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "testset_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "env_id": "interp-1",
+  "op": "runChecks",
+  "started_at": 1792214400000,
+  "ended_at": 1792214400123,
+  "exit": "pass",
+  "log_excerpt": "20 fixtures, 20 pass, 0 fail (golden vector, deterministic)",
+  "refs": [
+    "evt:12",
+    "evt:13"
+  ],
+  "receipt_digest": "f949fea06e317440d5a3ea5de4f9218061165df595c469ff70889c0f1a7423fd"
+}

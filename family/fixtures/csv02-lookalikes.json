@@ -1,0 +1,1 @@
+{"criterion_id":"CSV-02","expected":{"error":{"code":"MISSING_COLUMN","missing":["unit_price"],"op":"require_columns"}},"id":"csv02-lookalikes","input":"invoice_id,customer_name,item,qty,Unit_Price,unitprice,unit_price \nINV-301,Acme Corp,Widget,2,9.99,9.99,9.99\n","severity":"critical"}

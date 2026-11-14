@@ -1,0 +1,1 @@
+{"criterion_id":"CSV-03","expected":{"error":{"code":"BAD_DECIMAL","column":"unit_price","op":"parse_decimal","row":1,"value":"twelve"}},"id":"csv03-bad-decimal-text","input":"invoice_id,customer_name,item,qty,unit_price\nINV-403,Acme Corp,Widget,1,twelve\n","severity":"medium"}

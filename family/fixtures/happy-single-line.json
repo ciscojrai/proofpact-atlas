@@ -1,0 +1,1 @@
+{"criterion_id":"CSV-05","expected":{"output":{"currency":"USD","customer":"Globex","format":"invoice/1","invoice_id":"INV-101","line_count":1,"lines":[{"item":"Sprocket","line_total":"15","qty":"3","unit_price":"5"}],"total":"15"}},"id":"happy-single-line","input":"invoice_id,customer_name,item,qty,unit_price\nINV-101,Globex,Sprocket,3,5.00\n","severity":"low"}

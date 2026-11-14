@@ -8,7 +8,16 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test:unit": "node --test app/ receipts/ && node receipts/canonical.mjs --selftest",
+    "smoke": "node app/smoke.mjs",
+    "demo:e2e": "node scripts/demo-e2e.mjs",
+    "verify:arcs": "node family/verify-arcs.mjs",
+    "verify:agents": "node agents/fixture.mjs",
+    "test:ui": "node --test ui/test-ui.mjs",
+    "matrix": "node scripts/matrix.mjs",
+    "build:contract": "PATH=\"$HOME/.cargo/bin:$PATH\" RUSTFLAGS=\"--cfg near\" cargo build --release --target wasm32-unknown-unknown --manifest-path contract/Cargo.toml",
+    "setup:sandbox": "./contract/scripts/setup-sandbox.sh"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

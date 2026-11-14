@@ -1,0 +1,7 @@
+{
+  "max_revision_rounds": 2,
+  "max_model_requests": 40,
+  "wall_clock_ms": 900000,
+  "max_concurrent_runs": 2,
+  "max_message_bytes": 65536
+}

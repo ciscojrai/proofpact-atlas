@@ -1,0 +1,1 @@
+{"criterion_id":"CSV-03","expected":{"error":{"code":"BAD_DECIMAL","column":"unit_price","op":"parse_decimal","row":1,"value":"1.1234567"}},"id":"csv03-seven-dp-rejected","input":"invoice_id,customer_name,item,qty,unit_price\nINV-402,Acme Corp,Too Precise,1,1.1234567\n","severity":"high"}

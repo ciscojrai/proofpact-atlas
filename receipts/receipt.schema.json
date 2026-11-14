@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "proofpact/receipt/1",
+  "title": "ProofPact execution receipt (INTERFACES §5)",
+  "type": "object",
+  "required": ["run_id", "job_id", "rev", "artifact_digest", "spec_digest", "policy_digest", "testset_digest", "env_id", "op", "started_at", "ended_at", "exit", "log_excerpt", "refs"],
+  "properties": {
+    "run_id": { "type": "string", "pattern": "^r_[0-9a-f]{8}$" },
+    "job_id": { "type": "string", "pattern": "^pp_[0-9a-f]{8}$" },
+    "rev": { "type": "integer", "minimum": 1 },
+    "artifact_digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "spec_digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "policy_digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "testset_digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "env_id": { "type": "string", "minLength": 1 },
+    "op": { "type": "string", "minLength": 1 },
+    "started_at": { "type": "integer", "minimum": 0 },
+    "ended_at": { "type": "integer", "minimum": 0 },
+    "exit": { "type": "string", "minLength": 1 },
+    "log_excerpt": { "type": "string", "maxLength": 2048 },
+    "refs": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ProofPact · Verified Escrow Console</title>
+  <meta name="description" content="Bounded CSV Work · Executable Acceptance · Guaranteed Settlement">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Top Navigation & Persistent Status Bar -->
+  <header class="top-nav" role="banner">
+    <div class="nav-container">
+      <div class="brand-group">
+        <div class="brand-logo" aria-hidden="true">PP</div>
+        <div>
+          <span class="brand-text">ProofPact</span>
+          <span class="brand-tagline"> · Bounded CSV Work · Executable Acceptance</span>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <span id="net-status-chip" class="chip ok mono" title="Live Server Connection">
+          <span class="dot" aria-hidden="true">●</span> <span id="net-status-text">Connecting...</span>
+        </span>
+        <button id="theme-toggle-btn" class="btn-icon" aria-label="Toggle dark/light theme" type="button">
+          <span id="theme-icon" aria-hidden="true">🌓</span> <span id="theme-text">Theme</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section with Ambient Conic Spotlight -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="lamp" aria-hidden="true">
+      <div class="cone cl"></div>
+      <div class="cone cr"></div>
+      <div class="beam"></div>
+    </div>
+    <div class="hero-tag mono">PROOFPACT · AUTONOMOUS AGENT SETTLEMENT CONSOLE</div>
+    <h1 id="hero-title" class="hero-title">Verified CSV Transformation Escrow</h1>
+    <p class="hero-sub">Deterministic settlement for autonomous CSV transformation agents. Funds locked in escrow, released strictly upon cryptographic verification.</p>
+    
+    <button id="hero-cta" class="glass-btn" type="button">
+      <span class="orb" aria-hidden="true"></span>
+      <span>Inspect Escrow &amp; Criteria</span>
+    </button>
+
+    <!-- Persistent Mode & Trust Chips -->
+    <div class="chips-bar mono" role="region" aria-label="Persistent Mode Settings">
+      <span id="chip-chain-mode" class="chip acc" title="Execution Blockchain Environment">CHAIN · LOCAL_SIMULATION</span>
+      <span id="chip-model-mode" class="chip acc2" title="Agent Intelligence Execution Mode">AGENTS · FIXTURE_AGENTS</span>
+      <span id="chip-verifier-trust" class="chip warn" title="A digest binds bytes; it never claims execution, correctness, or confidentiality by itself.">VERIFIER · TRUSTED_RUNNER</span>
+    </div>
+  </section>
+
+  <!-- Interactive Acceptance State Simulator Toolbar (INTERFACES §9) -->
+  <section class="sim-toolbar" aria-labelledby="sim-title">
+    <div class="sim-box">
+      <div class="sim-header">
+        <span id="sim-title" class="sim-title">INTERFACES §9 Acceptance State Simulator</span>
+        <span class="mono" style="font-size: 0.72rem; color: var(--mut);">Simulate Frozen Contract Transitions</span>
+      </div>
+      <div class="sim-buttons" role="group" aria-label="State simulation presets">
+        <button type="button" class="sim-btn active" data-state="default">Active Seed (Normal)</button>
+        <button type="button" class="sim-btn bad" data-state="failed-verification">1. Failed Verification (D6)</button>
+        <button type="button" class="sim-btn bad" data-state="rejected-auth">2. Rejected Auth (D3)</button>
+        <button type="button" class="sim-btn warn" data-state="pending-tx">3. Pending Transaction (D1)</button>
+        <button type="button" class="sim-btn warn" data-state="failed-transfer">4. Failed Transfer (D8)</button>
+        <button type="button" class="sim-btn ok" data-state="confirmed-payment">5. Confirmed Payment (D1/D10)</button>
+      </div>
+    </div>
+  </section>
+
+  <main class="console-main" id="main-content">
+    <!-- Verbatim Panic & Error Alert Card -->
+    <div id="panic-card" class="panic-card" role="alert" aria-live="assertive">
+      <div class="panic-header">
+        <div class="panic-badge mono">
+          <span aria-hidden="true">⚠️</span> <span id="panic-type-label">CONTRACT PANIC</span>
+        </div>
+        <span id="panic-timestamp" class="mono" style="font-size: 0.72rem; color: var(--mut);"></span>
+      </div>
+      <div id="panic-code" class="panic-code mono">NOT_VERIFIER</div>
+      <div id="panic-desc" class="panic-desc">Caller account is not the designated verifier account. State completely unchanged; escrow untouched.</div>
+      <div id="panic-details" class="panic-details mono"></div>
+    </div>
+
+    <!-- Stepper Lifecycle Flow -->
+    <section class="section-group" aria-labelledby="flow-title">
+      <h2 id="flow-title" class="section-title">
+        <span>Escrow Lifecycle Flow</span>
+        <span id="badge-escrow-state" class="chip acc mono">Active</span>
+      </h2>
+      <p class="section-desc">On-chain state machine transitions from deposit funding through verification to terminal settlement or refund.</p>
+      
+      <div class="flow mono" id="flow-stepper" role="list">
+        <span class="st" data-s="Funded" role="listitem">Funded</span><span class="ar" aria-hidden="true">→</span>
+        <span class="st on" data-s="Active" role="listitem">Active</span><span class="ar" aria-hidden="true">→</span>
+        <span class="st" data-s="CandidateSubmitted" role="listitem">CandidateSubmitted</span><span class="ar" aria-hidden="true">→</span>
+        <span class="st" data-s="VerifiedPass" role="listitem">VerifiedPass</span><span class="ar" aria-hidden="true">→</span>
+        <span class="st" data-s="PayoutPending" role="listitem">PayoutPending</span><span class="ar" aria-hidden="true">→</span>
+        <span class="st" data-s="Paid" role="listitem">Paid</span>
+      </div>
+    </section>
+
+    <!-- Panel 1: Job Header & Escrow Summary -->
+    <section class="section-group" aria-labelledby="job-summary-title">
+      <h2 id="job-summary-title" class="section-title">Job &amp; Escrow Overview</h2>
+      <div class="grid-cards">
+        <div class="card">
+          <h3>Job Identifier</h3>
+          <p>Unique bounded task identifier</p>
+          <div class="metric-val mono">
+            <span id="val-job-id">pp_89abcdef</span>
+            <button class="btn-copy" type="button" data-copy="val-job-id" title="Copy Job ID" aria-label="Copy Job ID">📋</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Job Objective</h3>
+          <p>Task specification</p>
+          <div class="metric-val" id="val-title">InvoiceAcme October CSV (seed)</div>
+        </div>
+
+        <div class="card">
+          <h3>Escrow Payout</h3>
+          <p>Guaranteed settlement amount</p>
+          <div class="metric-val mono" id="val-payout" title="500,000,000,000,000,000,000,000 yoctoNEAR">
+            <span id="val-payout-near">0.5</span> NEAR
+            <span style="font-size: 0.72rem; color: var(--mut); font-weight: normal;">(+0.01 reserve)</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Deadlines</h3>
+          <p>Enforced time rules</p>
+          <div class="metric-val mono" style="font-size: 0.8rem;">
+            <div>Submit: <span id="val-deadline-sub">2026-10-17 UTC</span></div>
+            <div style="font-size: 0.72rem; color: var(--mut); margin-top: 0.2rem;">
+              Rule: <span id="val-time-rule">now &lt; deadline</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Participating Actors</h3>
+          <p>Role-bound accounts</p>
+          <div class="metric-val mono" style="font-size: 0.75rem; line-height: 1.4;">
+            <div>Client: <span id="val-actor-client" style="color: var(--fg);">client.testnet</span></div>
+            <div>Builder: <span id="val-actor-builder" style="color: var(--acc2);">builder.testnet</span></div>
+            <div>Verifier: <span id="val-actor-verifier" style="color: var(--acc);">verifier.testnet</span></div>
+          </div>
+        </div>
+
+        <div class="card" id="card-settlement">
+          <h3>Settlement Tx</h3>
+          <p>Cryptographic reference</p>
+          <div class="metric-val mono" style="font-size: 0.78rem;">
+            <span id="val-tx-ref" style="color: var(--mut);">Pending verification</span>
+            <button class="btn-copy" id="btn-copy-tx" type="button" data-copy="val-tx-ref" title="Copy Tx Ref" aria-label="Copy Tx Ref" style="display: none;">📋</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Panel 2: Frozen Criteria Matrix (CSV-01 through CSV-06) -->
+    <section class="section-group" aria-labelledby="criteria-title">
+      <h2 id="criteria-title" class="section-title">
+        <span>Criteria Verification Matrix</span>
+        <span class="mono" style="font-size: 0.75rem; color: var(--mut); font-weight: 500;">CSV-01 through CSV-06</span>
+      </h2>
+      <p class="section-desc">Executable acceptance criteria defining the boundary of verified work. All criteria must pass for escrow release.</p>
+      
+      <div class="crit-grid" id="criteria-grid">
+        <!-- CSV-01 -->
+        <div class="crit-card pass" id="crit-card-CSV-01">
+          <div class="crit-top">
+            <span class="crit-id mono">CSV-01</span>
+            <span class="crit-badge pass mono" id="badge-CSV-01">PASSED</span>
+          </div>
+          <div class="crit-name">Quoted Commas</div>
+          <div class="crit-desc">RFC-4180 parsing, embedded commas, newlines inside quotes, and escaped quotes ("").</div>
+          <div class="crit-footer mono">
+            <span>Fixture: csv01-quoted</span>
+            <span id="ms-CSV-01">3 ms</span>
+          </div>
+        </div>
+
+        <!-- CSV-02 -->
+        <div class="crit-card pass" id="crit-card-CSV-02">
+          <div class="crit-top">
+            <span class="crit-id mono">CSV-02</span>
+            <span class="crit-badge pass mono" id="badge-CSV-02">PASSED</span>
+          </div>
+          <div class="crit-name">Required Fields</div>
+          <div class="crit-desc">Up-front schema validation via require_columns, case-sensitive matching, fail-fast missing.</div>
+          <div class="crit-footer mono">
+            <span>Fixture: csv02-required</span>
+            <span id="ms-CSV-02">2 ms</span>
+          </div>
+        </div>
+
+        <!-- CSV-03 -->
+        <div class="crit-card pass" id="crit-card-CSV-03">
+          <div class="crit-top">
+            <span class="crit-id mono">CSV-03</span>
+            <span class="crit-badge pass mono" id="badge-CSV-03">PASSED</span>
+          </div>
+          <div class="crit-name">Decimal-No-Float</div>
+          <div class="crit-desc">Zero IEEE-754 floats, BigInt 6dp scaled arithmetic, half-up rounding, float-trap immunity.</div>
+          <div class="crit-footer mono">
+            <span>Fixture: csv03-decimal</span>
+            <span id="ms-CSV-03">4 ms</span>
+          </div>
+        </div>
+
+        <!-- CSV-04 -->
+        <div class="crit-card pass" id="crit-card-CSV-04">
+          <div class="crit-top">
+            <span class="crit-id mono">CSV-04</span>
+            <span class="crit-badge pass mono" id="badge-CSV-04">PASSED</span>
+          </div>
+          <div class="crit-name">Structured Errors</div>
+          <div class="crit-desc">Deterministic JSON error objects {code, op, message, ...fields}, no bare strings or stack traces.</div>
+          <div class="crit-footer mono">
+            <span>Fixture: csv04-errors</span>
+            <span id="ms-CSV-04">2 ms</span>
+          </div>
+        </div>
+
+        <!-- CSV-05 -->
+        <div class="crit-card pass" id="crit-card-CSV-05">
+          <div class="crit-top">
+            <span class="crit-id mono">CSV-05</span>
+            <span class="crit-badge pass mono" id="badge-CSV-05">PASSED</span>
+          </div>
+          <div class="crit-name">Schema-Valid Output</div>
+          <div class="crit-desc">Compliance with invoice/1 format, uniform invoice IDs, line count integrity, total consistency.</div>
+          <div class="crit-footer mono">
+            <span>Fixture: csv05-schema</span>
+            <span id="ms-CSV-05">3 ms</span>
+          </div>
+        </div>
+
+        <!-- CSV-06 -->
+        <div class="crit-card pass" id="crit-card-CSV-06">
+          <div class="crit-top">
+            <span class="crit-id mono">CSV-06</span>
+            <span class="crit-badge pass mono" id="badge-CSV-06">PASSED</span>
+          </div>
+          <div class="crit-name">Execution Limits</div>
+          <div class="crit-desc">Hard caps enforcement: 512 KiB bytes, 50 columns, 5,000 rows, 32 ops, scale &le; 6.</div>
+          <div class="crit-footer mono">
+            <span>Fixture: csv06-limits</span>
+            <span id="ms-CSV-06">2 ms</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Panel 3: Candidate Revision Details & Check Results -->
+    <section class="section-group" aria-labelledby="rev-title">
+      <h2 id="rev-title" class="section-title">
+        <span>Candidate Revision Inspector</span>
+        <span class="mono" style="font-size: 0.8rem; color: var(--mut);">Rev <span id="val-rev">1</span> of 3 max</span>
+      </h2>
+      <p class="section-desc">Declarative transformation artifact and automated test runner evaluation per fixture.</p>
+
+      <div class="rev-box">
+        <div class="rev-header">
+          <div>
+            <span class="chip acc2 mono" id="badge-rev">REVISION 1</span>
+            <span class="chip mono" style="margin-left: 0.4rem;">csv-xform/1</span>
+          </div>
+          <div class="mono" style="font-size: 0.75rem;">
+            Digest: <span id="val-artifact-digest" style="color: var(--mut);">aaaaaaaaaaaaaaaa...</span>
+            <button class="btn-copy" type="button" data-copy="val-artifact-digest" title="Copy Digest" aria-label="Copy Digest">📋</button>
+          </div>
+        </div>
+
+        <div style="font-size: 0.8rem; color: var(--mut); margin-bottom: 0.3rem;">Declarative Operations Pipeline:</div>
+        <div class="rev-ops-list mono" id="val-ops-list">
+          <span class="op-pill">select_columns</span>
+          <span class="op-pill">require_columns</span>
+          <span class="op-pill">parse_decimal</span>
+          <span class="op-pill">emit_invoice</span>
+        </div>
+
+        <div class="tbl" role="table" aria-label="Check Results Table">
+          <div class="tr h mono" role="row">
+            <div role="columnheader">Fixture ID</div>
+            <div role="columnheader">Criterion</div>
+            <div role="columnheader">Status</div>
+            <div role="columnheader">Latency</div>
+            <div role="columnheader">Detail Summary</div>
+          </div>
+          <div id="tbl-checks-body">
+            <div class="tr mono" role="row">
+              <div role="cell">csv01-quoted</div>
+              <div role="cell">CSV-01</div>
+              <div role="cell" class="res-pass">PASS</div>
+              <div role="cell">3 ms</div>
+              <div role="cell">RFC-4180 quotes &amp; commas verified</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Panel 4: Builder & Challenger Message Feeds (Structured Anti-CoT) -->
+    <section class="section-group" aria-labelledby="feeds-title">
+      <h2 id="feeds-title" class="section-title">
+        <span>Dual-Agent Structured Message Feeds</span>
+        <span class="chip mono" style="font-size: 0.7rem;">ANTI-COT HARD GUARD ACTIVE</span>
+      </h2>
+      <p class="section-desc">Structured envelopes only. No raw prompts, deliberation scratchpads, or chain-of-thought are ever displayed.</p>
+
+      <div class="feeds-grid">
+        <!-- Builder Feed -->
+        <div class="feed-col">
+          <div class="feed-header">
+            <div class="feed-title">
+              <span class="chip acc2 mono">BUILDER</span>
+              <span>Artifact Proposals</span>
+            </div>
+            <span class="mono" style="font-size: 0.72rem; color: var(--mut);" id="cnt-builder-msgs">1 message</span>
+          </div>
+          <div class="feed-stream" id="feed-builder" role="log" aria-live="polite">
+            <!-- Builder message card -->
+          </div>
+        </div>
+
+        <!-- Challenger Feed -->
+        <div class="feed-col">
+          <div class="feed-header">
+            <div class="feed-title">
+              <span class="chip warn mono">CHALLENGER</span>
+              <span>Counterexamples &amp; Defects</span>
+            </div>
+            <span class="mono" style="font-size: 0.72rem; color: var(--mut);" id="cnt-challenger-msgs">0 challenges</span>
+          </div>
+          <div class="feed-stream" id="feed-challenger" role="log" aria-live="polite">
+            <!-- Challenger message card -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Panel 5: Event Timeline & Audit Log -->
+    <section class="section-group" aria-labelledby="timeline-title">
+      <h2 id="timeline-title" class="section-title">Event Timeline Ledger</h2>
+      <p class="section-desc">Monospace ledger of contract state transitions and controller checkpoints.</p>
+
+      <div class="ledger-view mono" id="timeline-ledger" role="log" aria-label="Event Timeline Ledger">
+        <!-- Rows injected dynamically -->
+      </div>
+    </section>
+
+    <!-- Panel 6: Receipt Inspector & Cryptographic Proof Card -->
+    <section class="section-group" aria-labelledby="receipt-title">
+      <h2 id="receipt-title" class="section-title">
+        <span>Cryptographic Receipt Inspector</span>
+        <span id="badge-receipt-verified" class="digest-verified-badge mono">
+          <span>✓</span> <span>VERIFIED DIGEST</span>
+        </span>
+      </h2>
+      <p class="section-desc">Sealed execution attestation binding artifact, spec, policy, and testset via Web Crypto SHA-256.</p>
+
+      <div class="receipt-box">
+        <div class="receipt-header">
+          <div class="mono" style="font-size: 0.85rem;">
+            Run ID: <strong id="val-receipt-run-id">r_01234567</strong>
+            <span class="chip mono" style="margin-left: 0.5rem;" id="val-receipt-env">interp-1</span>
+          </div>
+          <button id="btn-copy-receipt" class="btn-icon mono" type="button">
+            <span>📋</span> <span>Copy Receipt JSON</span>
+          </button>
+        </div>
+
+        <div class="fingerprints-grid mono">
+          <div class="fp-card">
+            <div class="fp-label">artifact_digest (sha256 of canonical artifact)</div>
+            <div class="fp-val" id="val-fp-artifact">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
+          </div>
+          <div class="fp-card">
+            <div class="fp-label">spec_digest (sha256 of job specification)</div>
+            <div class="fp-val" id="val-fp-spec">bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</div>
+          </div>
+          <div class="fp-card">
+            <div class="fp-label">policy_digest (sha256 of budget limits)</div>
+            <div class="fp-val" id="val-fp-policy">cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc</div>
+          </div>
+          <div class="fp-card">
+            <div class="fp-label">testset_digest (sha256 of test suite)</div>
+            <div class="fp-val" id="val-fp-testset">dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</div>
+          </div>
+        </div>
+
+        <div style="font-size: 0.78rem; font-weight: 600; margin-bottom: 0.3rem;">Sealed Receipt Digest:</div>
+        <div class="fp-card mono" style="margin-bottom: 0.9rem;">
+          <div class="fp-val" id="val-receipt-digest" style="color: var(--ok); font-weight: 600;">
+            f949fea06e317440d5a3ea5de4f9218061165df595c469ff70889c0f1a7423fd
+          </div>
+        </div>
+
+        <div style="font-size: 0.78rem; font-weight: 600; margin-bottom: 0.3rem;">Deterministic Execution Log Excerpt:</div>
+        <div class="log-excerpt-view mono" id="val-log-excerpt">
+20 fixtures, 20 pass, 0 fail (golden vector, deterministic)
+        </div>
+
+        <details>
+          <summary class="mono" style="font-size: 0.75rem; color: var(--mut); cursor: pointer; padding: 0.4rem 0;">
+            View Canonical JSON Payload
+          </summary>
+          <pre class="raw-json-view mono" id="val-raw-receipt-json"></pre>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <!-- Live Toast Notification -->
+  <div id="toast" class="toast mono" role="status" aria-live="polite">Copied to clipboard!</div>
+
+  <!-- Accessible Footer -->
+  <footer class="console-footer" role="contentinfo">
+    <div class="footer-container">
+      <div><strong>ProofPact</strong> · Deterministic CSV Work Acceptance &amp; Escrow Settlement Protocol</div>
+      <div class="trust-notice">
+        &ldquo;A digest binds bytes; it never claims execution, correctness, or confidentiality by itself.&rdquo;
+      </div>
+      <div class="mono" style="font-size: 0.7rem; color: var(--mut); margin-top: 0.4rem;">
+        Zero-dependency static console · Branch: stream/ui · INTERFACES v1.0
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
