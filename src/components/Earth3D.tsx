@@ -63,6 +63,16 @@ function getMarkerColorHex(wo: WorkOrder, isSelected: boolean): number {
   return 0x10b981; // Emerald-500
 }
 
+type ArcStyle = 'paid' | 'refunded' | 'unlinked';
+
+/** Settlement outcome drives arc rendering: green paid, amber refunded, dashed unlinked. */
+function getArcStyle(wo: WorkOrder): ArcStyle {
+  if (wo.evidence.isImported && wo.evidence.onChainVerification.txs.length > 0) {
+    return wo.settlement.status === 'Refunded' ? 'refunded' : 'paid';
+  }
+  return 'unlinked';
+}
+
 export const Earth3D: React.FC<Earth3DProps> = ({
   workOrders,
   selectedWorkOrder,
@@ -633,19 +643,54 @@ export const Earth3D: React.FC<Earth3DProps> = ({
     if (showArcs) {
       workOrders.forEach((wo) => {
         const { operationCoords, processingRegionCoords } = wo.orgContext;
-        const pts = generateGreatCircleArc(operationCoords, processingRegionCoords, EARTH_RADIUS * 1.005, 16, 44);
-        if (pts.length > 2) {
-          const isSelected = wo.id === selectedWorkOrder.id;
+        const isSelected = wo.id === selectedWorkOrder.id;
+        const style = getArcStyle(wo);
+        const arcColor = style === 'paid' ? 0x10b981 : style === 'refunded' ? 0xf59e0b : 0x94a3b8;
+
+        let pts = generateGreatCircleArc(
+          operationCoords,
+          processingRegionCoords,
+          EARTH_RADIUS * 1.005,
+          16,
+          44
+        );
+        let isPlume = false;
+        if (pts.length <= 2) {
+          // Coincident endpoints (operation == configured region): draw a vertical
+          // settlement beacon instead of a degenerate arc.
+          isPlume = true;
+          const normal = new THREE.Vector3(
+            ...latLonToVector3(operationCoords.lat, operationCoords.lon, 1)
+          ).normalize();
+          pts = [0, 0.34, 0.67, 1].map((t) =>
+            normal.clone().multiplyScalar(EARTH_RADIUS * 1.005 + t * 20)
+          );
+        }
+
+        if (style === 'unlinked') {
+          const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
+          const lineMat = new THREE.LineDashedMaterial({
+            color: arcColor,
+            dashSize: 2.4,
+            gapSize: 1.8,
+            transparent: true,
+            opacity: isSelected ? 0.95 : 0.55,
+          });
+          const line = new THREE.Line(lineGeo, lineMat);
+          line.computeLineDistances();
+          arcsGroupRef.current?.add(line);
+        } else {
           const curve = new THREE.CatmullRomCurve3(pts);
           const tubeGeo = new THREE.TubeGeometry(curve, 36, isSelected ? 0.55 : 0.3, 6, false);
-          const arcColor = wo.policy.decision === 'REQUIRE APPROVAL' ? 0xf59e0b : 0x38bdf8;
           const tubeMat = new THREE.MeshBasicMaterial({
             color: arcColor,
             transparent: true,
-            opacity: isSelected ? 0.9 : 0.42,
+            opacity: isSelected ? 0.9 : 0.55,
           });
           arcsGroupRef.current?.add(new THREE.Mesh(tubeGeo, tubeMat));
+        }
 
+        if (!isPlume) {
           // Configured Processing Region destination node
           const destPos = latLonToVector3(processingRegionCoords.lat, processingRegionCoords.lon, EARTH_RADIUS * 1.006);
           const destGeo = new THREE.BoxGeometry(isSelected ? 1.8 : 1.2, isSelected ? 1.8 : 1.2, isSelected ? 1.8 : 1.2);
@@ -726,6 +771,20 @@ export const Earth3D: React.FC<Earth3DProps> = ({
           {selectedWorkOrder.orgContext.operationCoords.lat.toFixed(2)}°,{' '}
           {selectedWorkOrder.orgContext.operationCoords.lon.toFixed(2)}° · Configured region:{' '}
           {selectedWorkOrder.orgContext.configuredProcessingRegion}
+        </div>
+        <div className="flex items-center gap-3 mt-1.5 font-mono text-[10px] text-slate-400">
+          <span className="inline-flex items-center gap-1">
+            <span className="inline-block w-4 h-[3px] rounded-sm bg-emerald-400" aria-hidden="true" />
+            Paid
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <span className="inline-block w-4 h-[3px] rounded-sm bg-amber-400" aria-hidden="true" />
+            Refunded
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <span className="inline-block w-4 border-t-2 border-dashed border-slate-400" aria-hidden="true" />
+            No on-chain settlement
+          </span>
         </div>
         <div className="text-[11px] text-slate-400 mt-0.5">
           Illustrative business context · Selection opens details only
