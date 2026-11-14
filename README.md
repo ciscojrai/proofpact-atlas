@@ -47,6 +47,6 @@ Tracks: `agents` (Agent Economy), `business` (Autonomous Business), `security` (
 
 ## Hackathon Disclosures (Q-005 & Q-015)
 
-- **Two-submission disclosure (Q-015):** The submitter's other independent NEAR Hackathon submission is **Proofgate (Tycoon Ready)**, an offline conformance and mutation-testing oracle for AI-agent spending policies (`security` track).
+- **Two-submission disclosure (Q-015):** The submitter's other independent NEAR Hackathon submission is **Proofgate / Tycoon Ready** (`https://github.com/ciscojrai/tycoon-ready`), an offline conformance and mutation-testing oracle for AI-agent spending policies (`security`, `privacy` tracks).
 - **Baseline & AI disclosure (Q-005):** Built during the hackathon window (Nov 2026) with AI coding assistance. Escrow lifecycle design adapted from the team's mission contract prototype; check-runner pattern adapted from the team's Proofgate oracle. No private keys or API keys are committed.
 - **License:** MIT ([LICENSE](LICENSE)).
