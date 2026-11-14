@@ -25,7 +25,6 @@ import {
   getFixtureAgentLogStream,
 } from '../data/operationsData';
 import { LiveFxState } from '../hooks/useLiveFxRates';
-import { CurrencyConverter } from './CurrencyConverter';
 
 interface WorkOrderPanelProps {
   workOrder: WorkOrder;
@@ -46,7 +45,6 @@ export const WorkOrderPanel: React.FC<WorkOrderPanelProps> = ({
   workOrder,
   activeTab,
   onSelectTab,
-  fx,
 }) => {
   const [showWorkflowLogs, setShowWorkflowLogs] = useState<boolean>(false);
   const [logLaneFilter, setLogLaneFilter] = useState<'all' | 'Builder' | 'Challenger'>('all');
@@ -104,6 +102,28 @@ export const WorkOrderPanel: React.FC<WorkOrderPanelProps> = ({
             : ''
         }`
       : 'Not supplied';
+
+  const hasLocalRunnerFields =
+    workOrder.evidence.localRunner.artifactId !== null ||
+    workOrder.evidence.localRunner.suiteName !== null ||
+    workOrder.evidence.localRunner.rev1Note !== null ||
+    workOrder.evidence.localRunner.rev2Note !== null ||
+    (workOrder.evidence.localRunner.passedChecks !== null &&
+      workOrder.evidence.localRunner.totalChecks !== null) ||
+    workOrder.evidence.localRunner.runnerId !== null ||
+    workOrder.evidence.localRunner.sourceRevision !== null ||
+    workOrder.evidence.localRunner.artifactDigest !== null ||
+    workOrder.evidence.localRunner.reproduceCommand !== null ||
+    workOrder.evidence.localRunner.executedAt !== null;
+
+  const hasOnChainFields =
+    workOrder.evidence.onChainVerification.contractTransition !== null ||
+    workOrder.evidence.onChainVerification.network !== null ||
+    workOrder.evidence.onChainVerification.contractAccount !== null ||
+    workOrder.evidence.onChainVerification.operatorAccount !== null ||
+    workOrder.evidence.onChainVerification.runId !== null ||
+    workOrder.evidence.onChainVerification.operatorPassFlag !== null ||
+    workOrder.evidence.onChainVerification.recordedAt !== null;
 
   // Reset download confirmation when switching work orders
   useEffect(() => {
@@ -679,78 +699,104 @@ export const WorkOrderPanel: React.FC<WorkOrderPanelProps> = ({
                 <span className="font-mono text-[11px] text-slate-400">
                   {workOrder.evidence.localRunner.exitCode !== null
                     ? `Exit ${workOrder.evidence.localRunner.exitCode}`
-                    : 'Not supplied'}
+                    : 'No run recorded'}
                 </span>
               </div>
               <p className="text-slate-300">{workOrder.evidence.localRunner.summary}</p>
-              <dl className="grid grid-cols-1 gap-1.5 pt-2 border-t border-slate-800/80 text-[11px]">
-                <div className="flex justify-between gap-2">
-                  <dt className="text-slate-400 shrink-0">Artifact ID</dt>
-                  <dd className="font-mono text-slate-200 text-right break-all">
-                    {workOrder.evidence.localRunner.artifactId ?? 'Not supplied'}
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-2">
-                  <dt className="text-slate-400 shrink-0">Suite</dt>
-                  <dd className="font-mono text-slate-200 text-right">
-                    {workOrder.evidence.localRunner.suiteName ?? 'Not supplied'}
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-2">
-                  <dt className="text-slate-400 shrink-0">Rev 1</dt>
-                  <dd className="font-mono text-rose-300 text-right">
-                    {workOrder.evidence.localRunner.rev1Note ?? 'Not supplied'}
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-2">
-                  <dt className="text-slate-400 shrink-0">Rev 2</dt>
-                  <dd className="font-mono text-emerald-300 text-right">
-                    {workOrder.evidence.localRunner.rev2Note ?? 'Not supplied'}
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-2">
-                  <dt className="text-slate-400 shrink-0">Check counts</dt>
-                  <dd className="font-mono text-slate-200 text-right">{runnerCheckDisplay}</dd>
-                </div>
-                <div className="flex justify-between gap-2">
-                  <dt className="text-slate-400 shrink-0">Runner ID</dt>
-                  <dd className="font-mono text-slate-200 text-right">
-                    {workOrder.evidence.localRunner.runnerId ?? 'Not supplied'}
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-2">
-                  <dt className="text-slate-400 shrink-0">Source revision</dt>
-                  <dd className="font-mono text-slate-200 text-right break-all">
-                    {workOrder.evidence.localRunner.sourceRevision ?? 'Not supplied'}
-                  </dd>
-                </div>
-                <div className="flex flex-col gap-0.5 pt-1">
-                  <dt className="text-slate-400">Run artifact digest</dt>
-                  <dd className="font-mono text-slate-200 break-all">
-                    {workOrder.evidence.localRunner.artifactDigest ?? 'Not supplied'}
-                  </dd>
-                </div>
-                {workOrder.evidence.localRunner.reproduceCommand && (
-                  <div className="flex flex-col gap-1 pt-1">
-                    <dt className="text-slate-400">Reproduce</dt>
-                    <dd className="font-mono text-sky-300 bg-[#060910] border border-slate-800 rounded px-2 py-1 break-all">
-                      {workOrder.evidence.localRunner.reproduceCommand}
+              {hasLocalRunnerFields ? (
+                <dl className="grid grid-cols-1 gap-1.5 pt-2 border-t border-slate-800/80 text-[11px]">
+                  {workOrder.evidence.localRunner.artifactId !== null && (
+                    <div className="flex justify-between gap-2">
+                      <dt className="text-slate-400 shrink-0">Artifact ID</dt>
+                      <dd className="font-mono text-slate-200 text-right break-all">
+                        {workOrder.evidence.localRunner.artifactId}
+                      </dd>
+                    </div>
+                  )}
+                  {workOrder.evidence.localRunner.suiteName !== null && (
+                    <div className="flex justify-between gap-2">
+                      <dt className="text-slate-400 shrink-0">Suite</dt>
+                      <dd className="font-mono text-slate-200 text-right">
+                        {workOrder.evidence.localRunner.suiteName}
+                      </dd>
+                    </div>
+                  )}
+                  {workOrder.evidence.localRunner.rev1Note !== null && (
+                    <div className="flex justify-between gap-2">
+                      <dt className="text-slate-400 shrink-0">Rev 1</dt>
+                      <dd className="font-mono text-rose-300 text-right">
+                        {workOrder.evidence.localRunner.rev1Note}
+                      </dd>
+                    </div>
+                  )}
+                  {workOrder.evidence.localRunner.rev2Note !== null && (
+                    <div className="flex justify-between gap-2">
+                      <dt className="text-slate-400 shrink-0">Rev 2</dt>
+                      <dd className="font-mono text-emerald-300 text-right">
+                        {workOrder.evidence.localRunner.rev2Note}
+                      </dd>
+                    </div>
+                  )}
+                  {workOrder.evidence.localRunner.passedChecks !== null &&
+                    workOrder.evidence.localRunner.totalChecks !== null && (
+                      <div className="flex justify-between gap-2">
+                        <dt className="text-slate-400 shrink-0">Check counts</dt>
+                        <dd className="font-mono text-slate-200 text-right">{runnerCheckDisplay}</dd>
+                      </div>
+                    )}
+                  {workOrder.evidence.localRunner.runnerId !== null && (
+                    <div className="flex justify-between gap-2">
+                      <dt className="text-slate-400 shrink-0">Runner ID</dt>
+                      <dd className="font-mono text-slate-200 text-right">
+                        {workOrder.evidence.localRunner.runnerId}
+                      </dd>
+                    </div>
+                  )}
+                  {workOrder.evidence.localRunner.sourceRevision !== null && (
+                    <div className="flex justify-between gap-2">
+                      <dt className="text-slate-400 shrink-0">Source revision</dt>
+                      <dd className="font-mono text-slate-200 text-right break-all">
+                        {workOrder.evidence.localRunner.sourceRevision}
+                      </dd>
+                    </div>
+                  )}
+                  {workOrder.evidence.localRunner.artifactDigest !== null && (
+                    <div className="flex flex-col gap-0.5 pt-1">
+                      <dt className="text-slate-400">Run artifact digest</dt>
+                      <dd className="font-mono text-slate-200 break-all">
+                        {workOrder.evidence.localRunner.artifactDigest}
+                      </dd>
+                    </div>
+                  )}
+                  {workOrder.evidence.localRunner.reproduceCommand && (
+                    <div className="flex flex-col gap-1 pt-1">
+                      <dt className="text-slate-400">Reproduce</dt>
+                      <dd className="font-mono text-sky-300 bg-[#060910] border border-slate-800 rounded px-2 py-1 break-all">
+                        {workOrder.evidence.localRunner.reproduceCommand}
+                      </dd>
+                    </div>
+                  )}
+                  {workOrder.evidence.localRunner.executedAt !== null && (
+                    <div className="flex justify-between gap-2 pt-1">
+                      <dt className="text-slate-400 shrink-0">Executed at</dt>
+                      <dd className="font-mono text-slate-200 text-right">
+                        {workOrder.evidence.localRunner.executedAt}
+                      </dd>
+                    </div>
+                  )}
+                  <div className="flex justify-between gap-2 pt-1.5 border-t border-slate-800/60">
+                    <dt className="text-slate-400 shrink-0">Settlement binding</dt>
+                    <dd className="font-mono text-amber-300 text-right">
+                      {workOrder.evidence.localRunner.settlementBinding}
                     </dd>
                   </div>
-                )}
-                <div className="flex justify-between gap-2 pt-1">
-                  <dt className="text-slate-400 shrink-0">Executed at</dt>
-                  <dd className="font-mono text-slate-200 text-right">
-                    {workOrder.evidence.localRunner.executedAt ?? 'Not supplied'}
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-2 pt-1.5 border-t border-slate-800/60">
-                  <dt className="text-slate-400 shrink-0">Settlement binding</dt>
-                  <dd className="font-mono text-amber-300 text-right">
-                    {workOrder.evidence.localRunner.settlementBinding}
-                  </dd>
-                </div>
-              </dl>
+                </dl>
+              ) : (
+                <p className="font-mono text-slate-500 text-[11px] pt-2 border-t border-slate-800/80">
+                  No runner fields recorded — see linkage note above. Settlement binding:{' '}
+                  {workOrder.evidence.localRunner.settlementBinding}
+                </p>
+              )}
             </div>
 
             {/* 2. Operator-Submitted On-Chain Verification */}
@@ -761,7 +807,8 @@ export const WorkOrderPanel: React.FC<WorkOrderPanelProps> = ({
                   <span>2. Operator-submitted on-chain verification</span>
                 </h3>
                 <span className="font-mono text-[11px] text-amber-300">
-                  {workOrder.evidence.onChainVerification.contractTransition ?? 'Not supplied'}
+                  {workOrder.evidence.onChainVerification.contractTransition ??
+                    'No verification transition'}
                 </span>
               </div>
 
@@ -772,56 +819,73 @@ export const WorkOrderPanel: React.FC<WorkOrderPanelProps> = ({
                     {workOrder.evidence.onChainVerification.verificationSource}
                   </dd>
                 </div>
-                <div className="flex justify-between gap-2">
-                  <dt className="text-slate-400">Contract transition</dt>
-                  <dd className="font-mono text-slate-200 text-right">
-                    {workOrder.evidence.onChainVerification.contractTransition ?? 'Not supplied'}
-                  </dd>
-                </div>
+                {workOrder.evidence.onChainVerification.contractTransition !== null && (
+                  <div className="flex justify-between gap-2">
+                    <dt className="text-slate-400">Contract transition</dt>
+                    <dd className="font-mono text-slate-200 text-right">
+                      {workOrder.evidence.onChainVerification.contractTransition}
+                    </dd>
+                  </div>
+                )}
                 <div className="flex justify-between gap-2">
                   <dt className="text-slate-400">Runner checks</dt>
                   <dd className="font-mono text-amber-200 text-right">
                     {workOrder.evidence.onChainVerification.runnerChecksStatus}
                   </dd>
                 </div>
-                <div className="flex justify-between gap-2 pt-1.5 border-t border-slate-800/60">
-                  <dt className="text-slate-400">Network</dt>
-                  <dd className="font-mono text-slate-200 text-right">
-                    {workOrder.evidence.onChainVerification.network ?? 'Not supplied'}
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-2">
-                  <dt className="text-slate-400">Contract account</dt>
-                  <dd className="font-mono text-slate-200 text-right break-all">
-                    {workOrder.evidence.onChainVerification.contractAccount ?? 'Not supplied'}
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-2">
-                  <dt className="text-slate-400">Operator account</dt>
-                  <dd className="font-mono text-slate-200 text-right break-all">
-                    {workOrder.evidence.onChainVerification.operatorAccount ?? 'Not supplied'}
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-2">
-                  <dt className="text-slate-400">Run ID</dt>
-                  <dd className="font-mono text-slate-200 text-right">
-                    {workOrder.evidence.onChainVerification.runId ?? 'Not supplied'}
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-2">
-                  <dt className="text-slate-400">Operator pass flag</dt>
-                  <dd className="font-mono text-slate-200 text-right">
-                    {workOrder.evidence.onChainVerification.operatorPassFlag !== null
-                      ? `${String(workOrder.evidence.onChainVerification.operatorPassFlag)} (operator-submitted flag)`
-                      : 'Not supplied'}
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-2">
-                  <dt className="text-slate-400">Recorded at</dt>
-                  <dd className="font-mono text-slate-200 text-right">
-                    {workOrder.evidence.onChainVerification.recordedAt ?? 'Not supplied'}
-                  </dd>
-                </div>
+                {!hasOnChainFields && (
+                  <div className="font-mono text-slate-500 text-[11px] pt-1">
+                    No chain identity fields recorded — see linkage note above.
+                  </div>
+                )}
+                {workOrder.evidence.onChainVerification.network !== null && (
+                  <div className="flex justify-between gap-2 pt-1.5 border-t border-slate-800/60">
+                    <dt className="text-slate-400">Network</dt>
+                    <dd className="font-mono text-slate-200 text-right">
+                      {workOrder.evidence.onChainVerification.network}
+                    </dd>
+                  </div>
+                )}
+                {workOrder.evidence.onChainVerification.contractAccount !== null && (
+                  <div className="flex justify-between gap-2">
+                    <dt className="text-slate-400">Contract account</dt>
+                    <dd className="font-mono text-slate-200 text-right break-all">
+                      {workOrder.evidence.onChainVerification.contractAccount}
+                    </dd>
+                  </div>
+                )}
+                {workOrder.evidence.onChainVerification.operatorAccount !== null && (
+                  <div className="flex justify-between gap-2">
+                    <dt className="text-slate-400">Operator account</dt>
+                    <dd className="font-mono text-slate-200 text-right break-all">
+                      {workOrder.evidence.onChainVerification.operatorAccount}
+                    </dd>
+                  </div>
+                )}
+                {workOrder.evidence.onChainVerification.runId !== null && (
+                  <div className="flex justify-between gap-2">
+                    <dt className="text-slate-400">Run ID</dt>
+                    <dd className="font-mono text-slate-200 text-right">
+                      {workOrder.evidence.onChainVerification.runId}
+                    </dd>
+                  </div>
+                )}
+                {workOrder.evidence.onChainVerification.operatorPassFlag !== null && (
+                  <div className="flex justify-between gap-2">
+                    <dt className="text-slate-400">Operator pass flag</dt>
+                    <dd className="font-mono text-slate-200 text-right">
+                      {`${String(workOrder.evidence.onChainVerification.operatorPassFlag)} (operator-submitted flag)`}
+                    </dd>
+                  </div>
+                )}
+                {workOrder.evidence.onChainVerification.recordedAt !== null && (
+                  <div className="flex justify-between gap-2">
+                    <dt className="text-slate-400">Recorded at</dt>
+                    <dd className="font-mono text-slate-200 text-right">
+                      {workOrder.evidence.onChainVerification.recordedAt}
+                    </dd>
+                  </div>
+                )}
               </dl>
 
               {/* Operator-Submitted Digests */}
@@ -852,7 +916,9 @@ export const WorkOrderPanel: React.FC<WorkOrderPanelProps> = ({
                     </div>
                   </dl>
                 ) : (
-                  <div className="font-mono text-slate-400">Not supplied</div>
+                  <div className="font-mono text-slate-400">
+                    No digests recorded for this settlement.
+                  </div>
                 )}
               </div>
 
@@ -1045,21 +1111,6 @@ export const WorkOrderPanel: React.FC<WorkOrderPanelProps> = ({
                 </div>
               </dl>
             </div>
-
-            {/* Real-Time FX Reference Converter (Inline) */}
-            <CurrencyConverter
-              fx={fx}
-              variant="inline"
-              suggestedAmount={
-                Number(workOrder.settlement.amount) > 0 ? workOrder.settlement.amount : '1'
-              }
-              suggestedCurrency={workOrder.settlement.asset}
-              suggestedLabel={
-                Number(workOrder.settlement.amount) > 0
-                  ? `${workOrder.settlement.amount} ${workOrder.settlement.asset}`
-                  : `1 ${workOrder.settlement.asset} (Reference)`
-              }
-            />
 
             {/* Implementation Status Section (Explicit boundary: no fake finance integrations) */}
             <div className="border border-slate-800 rounded-md bg-[#080C14] p-4 space-y-2.5">
