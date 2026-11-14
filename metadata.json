@@ -1,0 +1,8 @@
+{
+  "name": "ProofPact Atlas — Enterprise Operations",
+  "description": "Multinational operations governance console displaying organization context, illustrative policy decisions, fixture agent workflows, separated evidence layers, and read-only settlement outcomes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
