@@ -1069,7 +1069,7 @@ export const WorkOrderPanel: React.FC<WorkOrderPanelProps> = ({
               <dl className="divide-y divide-slate-800/80 text-xs">
                 <div className="py-2 flex items-center justify-between gap-3">
                   <dt className="text-slate-300">Finance adapter</dt>
-                  <dd className="font-mono text-amber-300">Finance adapter: not implemented</dd>
+                  <dd className="font-mono text-amber-300">Not implemented</dd>
                 </div>
                 <div className="py-2 flex items-center justify-between gap-3">
                   <dt className="text-slate-300">Policy evaluation</dt>
